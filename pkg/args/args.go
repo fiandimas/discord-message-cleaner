@@ -24,6 +24,10 @@ func Parse() (*Args, error) {
 		return nil, errors.New("Error: --authorization is required. type --help to see all commands")
 	}
 
+	if args.ChannelID == "" && args.GuildID == "" {
+		return nil, errors.New("Error: missing --channel or --guild")
+	}
+
 	if args.ChannelID != "" && args.GuildID != "" {
 		return nil, errors.New("Error: only --channel or --guild on")
 	}
