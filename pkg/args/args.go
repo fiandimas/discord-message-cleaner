@@ -7,7 +7,6 @@ import (
 
 type Args struct {
 	Autorization string
-	AllServers   bool
 	ChannelID    string
 	GuildID      string
 }
@@ -17,7 +16,6 @@ func Parse() (*Args, error) {
 	flag.StringVar(&args.Autorization, "authorization", "", "authorization token for access discord api")
 	flag.StringVar(&args.ChannelID, "channel", "", "delete messages from channel")
 	flag.StringVar(&args.GuildID, "guild", "", "delete messages from guild")
-	flag.BoolVar(&args.AllServers, "all-servers", false, "delete messages from all your server")
 	flag.Parse()
 
 	if args.Autorization == "" {
