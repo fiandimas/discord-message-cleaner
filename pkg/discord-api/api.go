@@ -131,7 +131,7 @@ func (da *discordAPI) sendRequest(p *Request) (*http.Response, error) {
 	return response, nil
 }
 
-type Timeout struct {
+type RequestTimeout struct {
 	Message    string  `json:"message"`
 	RetryAfter float64 `json:"retry_after"`
 	Global     bool    `json:"global"`
@@ -147,4 +147,24 @@ func (e *ErrorTimeout) Error() string {
 
 func (e *ErrorTimeout) RetryAfter() time.Duration {
 	return e.retryAfter
+}
+
+// asdsa
+// asdsadsa
+// asdsa
+
+type RequestError struct {
+	Code int `json:"code"`
+}
+
+type ErrorRequest struct {
+	code int
+}
+
+func (e *ErrorRequest) Error() string {
+	return ""
+}
+
+func (e *ErrorRequest) Code() int {
+	return e.code
 }

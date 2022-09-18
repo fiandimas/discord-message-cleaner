@@ -185,7 +185,7 @@ func (a *discordAPI) GetUserGuildMessagesID(q *QueryAsd) ([]Return, error) {
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		var t Timeout
+		var t RequestTimeout
 		_ = json.NewDecoder(response.Body).Decode(&t)
 		return nil, &ErrorTimeout{
 			retryAfter: time.Second * (time.Duration(t.RetryAfter + 2)),
@@ -228,7 +228,7 @@ func (a *discordAPI) GetTotalUserGuildMessages() (int, error) {
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		var t Timeout
+		var t RequestTimeout
 		_ = json.NewDecoder(response.Body).Decode(&t)
 		return 0, &ErrorTimeout{
 			retryAfter: time.Second * (time.Duration(t.RetryAfter + 2)),

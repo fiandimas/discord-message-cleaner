@@ -69,7 +69,7 @@ func (a *discordAPI) DeleteMessageById(r *Return) error {
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		var t Timeout
+		var t RequestTimeout
 		_ = json.NewDecoder(response.Body).Decode(&t)
 
 		return &ErrorTimeout{
@@ -77,7 +77,12 @@ func (a *discordAPI) DeleteMessageById(r *Return) error {
 		}
 	} else {
 		if response.StatusCode != 204 {
-			return errors.New(fmt.Sprintf("err %d", response.StatusCode))
+			var re RequestError
+			_ = json.NewDecoder(response.Body).Decode(&re)
+
+			return &ErrorRequest{
+				code: re.Code,
+			}
 		}
 	}
 
