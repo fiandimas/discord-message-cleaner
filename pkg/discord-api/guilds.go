@@ -177,6 +177,10 @@ func (a *discordAPI) GetUserGuildMessagesID(q *QueryAsd) ([]Return, error) {
 				Key:   "offset",
 				Value: strconv.Itoa(q.Offset),
 			},
+			{
+				Key: "include_nsfw",
+				Value: "true",
+			},
 		},
 	})
 	if err != nil {
@@ -219,6 +223,10 @@ func (a *discordAPI) GetTotalUserGuildMessages() (int, error) {
 			{
 				Key:   "author_id",
 				Value: a.DiscordMe.ID,
+			},
+			{
+				Key: "include_nsfw",
+				Value: "true",
 			},
 		},
 	})
