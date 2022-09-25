@@ -57,7 +57,7 @@ func (a *discordAPI) GetChannelMessageId(channel string) error {
 	return nil
 }
 
-func (a *discordAPI) DeleteMessageById(r *Return) error {
+func (a *discordAPI) DeleteMessageById(r *UserMessagesID) error {
 	response, err := a.sendRequest(&Request{
 		Method: "DELETE",
 		Path:   "/api/v9/channels/" + r.ChannelID + "/messages/" + r.MessageID,

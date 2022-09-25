@@ -18,12 +18,11 @@ var DiscordApi IDiscordAPI
 type IDiscordAPI interface {
 	// Discord Guild API
 	GuildIsValid() bool
-	GetUserGuildMessages() (*APIDiscordUserGuildMessages, error)
-	GetUserMessagesID() []Return
-	GetUserGuildMessagesID(*QueryAsd) ([]Return, error)
-	DeleteMessageById(*Return) error
+	GetUserMessagesID() []UserMessagesID
+	GetUserGuildMessagesID(*GuildQuery) ([]UserMessagesID, error)
+	DeleteMessageById(*UserMessagesID) error
 	GetTotalUserGuildMessages() (int, error)
-	GetDetailGuild() (*ASDDDD, error)
+	GetDetailGuild() (*DetailGuildResponse, error)
 }
 
 type discordAPI struct {
