@@ -14,8 +14,7 @@ var a *args.Args
 func init() {
 	arg, err := args.Parse()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		printErrAndExit(err)
 	}
 
 	a = arg
@@ -27,6 +26,7 @@ func main() {
 	if err != nil {
 		printErrAndExit(err)
 	}
+	fmt.Printf("Username: %s#%s\n", me.Username, me.Discriminator)
 
 	discordapi.Init(me, a)
 	discordApi := discordapi.DiscordApi
@@ -38,6 +38,7 @@ func main() {
 		}
 
 		msgcleaner.ClearGuildMessage()
+		os.Exit(1)
 	}
 
 }

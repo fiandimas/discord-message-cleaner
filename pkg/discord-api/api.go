@@ -23,6 +23,7 @@ type IDiscordAPI interface {
 	GetUserGuildMessagesID(*QueryAsd) ([]Return, error)
 	DeleteMessageById(*Return) error
 	GetTotalUserGuildMessages() (int, error)
+	GetDetailGuild() (*ASDDDD, error)
 }
 
 type discordAPI struct {

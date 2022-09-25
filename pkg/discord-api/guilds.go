@@ -178,7 +178,7 @@ func (a *discordAPI) GetUserGuildMessagesID(q *QueryAsd) ([]Return, error) {
 				Value: strconv.Itoa(q.Offset),
 			},
 			{
-				Key: "include_nsfw",
+				Key:   "include_nsfw",
 				Value: "true",
 			},
 		},
@@ -225,7 +225,7 @@ func (a *discordAPI) GetTotalUserGuildMessages() (int, error) {
 				Value: a.DiscordMe.ID,
 			},
 			{
-				Key: "include_nsfw",
+				Key:   "include_nsfw",
 				Value: "true",
 			},
 		},
@@ -246,4 +246,37 @@ func (a *discordAPI) GetTotalUserGuildMessages() (int, error) {
 	var t APIDiscordUserGuildMessages
 	json.NewDecoder(response.Body).Decode(&t)
 	return t.TotalResults, nil
+}
+
+// asdsasa
+// asdsa
+// asdsaas
+
+type ASDDDD struct {
+	ID   string
+	Name string
+}
+
+func (a *discordAPI) GetDetailGuild() (*ASDDDD, error) {
+	response, err := a.sendRequest(&Request{
+		Method: "GET",
+		Path:   "/api/v9/guilds/" + a.Args.GuildID,
+		Body:   nil,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != 200 {
+		return nil, errors.New("ERR")
+	}
+
+	var out ASDDDD
+	err = json.NewDecoder(response.Body).Decode(&out)
+	if err != nil {
+		return nil, err
+	}
+
+	return &out, nil
 }
