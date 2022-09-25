@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func ClearGuildMessage() {
+func ClearChannelMessages() {
 	discordApi := discordapi.DiscordApi
 
 	fmt.Println("Getting total messages in guilds ...")
@@ -33,13 +33,13 @@ func ClearGuildMessage() {
 	var offset int
 	var errCounter int
 	var wg sync.WaitGroup
-	var messageIds []discordapi.Return
+	var messageIds []discordapi.UserMessagesID
 
 	for {
 		fmt.Println("Getting request message offset", offset)
 
 		time.Sleep(time.Millisecond * 700)
-		asd, err := discordApi.GetUserGuildMessagesID(&discordapi.QueryAsd{
+		asd, err := discordApi.GetUserGuildMessagesID(&discordapi.GuildQuery{
 			Offset: offset,
 		})
 
@@ -76,42 +76,4 @@ func ClearGuildMessage() {
 	wg.Wait()
 
 	fmt.Println("Success delete messages in guild")
-}
-
-func deleteMessages(messageIds []discordapi.Return, wg *sync.WaitGroup) {
-	if len(messageIds) == 0 {
-		fmt.Println("No message can be deleted right now ...")
-		wg.Done()
-		return
-	}
-
-	discordApi := discordapi.DiscordApi
-	var counter int
-	for {
-		time.Sleep(time.Millisecond * 700)
-
-		if counter == len(messageIds) {
-			fmt.Println("Success delete", counter, "messages")
-			break
-		}
-
-		err := discordApi.DeleteMessageById(&messageIds[counter])
-		if err != nil {
-			if obj, ok := err.(*discordapi.ErrorTimeout); ok {
-				time.Sleep(obj.RetryAfter())
-			}
-
-			if obj, ok := err.(*discordapi.ErrorRequest); ok {
-				switch obj.Code() {
-				case 50083:
-					counter += 1
-					fmt.Println("This messages is in archived thread. try open thread and re-run command again later")
-				}
-			}
-			continue
-		}
-
-		counter += 1
-	}
-	wg.Done()
 }
