@@ -18,7 +18,6 @@ var DiscordApi IDiscordAPI
 type IDiscordAPI interface {
 	// Discord Guild API
 	GuildIsValid() bool
-	GetUserMessagesID() []UserMessagesID
 	GetUserGuildMessagesID(*GuildQuery) ([]UserMessagesID, error)
 	DeleteMessageById(*UserMessagesID) error
 	GetTotalUserGuildMessages() (int, error)
