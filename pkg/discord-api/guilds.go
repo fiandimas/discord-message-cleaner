@@ -3,21 +3,7 @@ package discordapi
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"net/http"
-	"strconv"
-	"time"
 )
-
-type APIDiscordUserGuildMessages struct {
-	TotalResults int                                    `json:"total_results"`
-	Messages     [][]APIDiscordUserGuildMessagesContent `json:"messages"`
-}
-
-type APIDiscordUserGuildMessagesContent struct {
-	ID        string `json:"id"`
-	ChannelID string `json:"channel_id"`
-}
 
 func (a *discordAPI) GuildIsValid() bool {
 	response, err := a.sendRequest(&Request{
@@ -37,117 +23,11 @@ func (a *discordAPI) GuildIsValid() bool {
 	return true
 }
 
-// asdas
-// sada
-// asdsadsadas
-// asdsadas
-
-type UserMessagesID struct {
-	MessageID string
-	ChannelID string
-}
-
-type GuildQuery struct {
-	Offset int
-}
-
-func (a *discordAPI) GetUserGuildMessagesID(q *GuildQuery) ([]UserMessagesID, error) {
-	var asda []UserMessagesID
-
-	response, err := a.sendRequest(&Request{
-		Method: "GET",
-		Path:   "/api/v9/guilds/" + a.Args.GuildID + "/messages/search",
-		Body:   nil,
-		Query: []RequestQuery{
-			{
-				Key:   "author_id",
-				Value: a.DiscordMe.ID,
-			},
-			{
-				Key:   "offset",
-				Value: strconv.Itoa(q.Offset),
-			},
-			{
-				Key:   "include_nsfw",
-				Value: "true",
-			},
-		},
-	})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode == http.StatusTooManyRequests {
-		var t RequestTimeout
-		_ = json.NewDecoder(response.Body).Decode(&t)
-		return nil, &ErrorTimeout{
-			retryAfter: time.Second * (time.Duration(t.RetryAfter + 2)),
-		}
-	}
-
-	var out APIDiscordUserGuildMessages
-	err = json.NewDecoder(response.Body).Decode(&out)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, message := range out.Messages {
-		for _, m := range message {
-			asda = append(asda, UserMessagesID{
-				MessageID: m.ID,
-				ChannelID: m.ChannelID,
-			})
-		}
-	}
-
-	return asda, nil
-}
-
-func (a *discordAPI) GetTotalUserGuildMessages() (int, error) {
-	response, err := a.sendRequest(&Request{
-		Method: "GET",
-		Path:   "/api/v9/guilds/" + a.Args.GuildID + "/messages/search",
-		Body:   nil,
-		Query: []RequestQuery{
-			{
-				Key:   "author_id",
-				Value: a.DiscordMe.ID,
-			},
-			{
-				Key:   "include_nsfw",
-				Value: "true",
-			},
-		},
-	})
-	if err != nil {
-		return 0, err
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode == http.StatusTooManyRequests {
-		var t RequestTimeout
-		_ = json.NewDecoder(response.Body).Decode(&t)
-		return 0, &ErrorTimeout{
-			retryAfter: time.Second * (time.Duration(t.RetryAfter + 2)),
-		}
-	}
-
-	var t APIDiscordUserGuildMessages
-	json.NewDecoder(response.Body).Decode(&t)
-	return t.TotalResults, nil
-}
-
 // asdsasa
 // asdsa
 // asdsaas
 
-type DetailGuildResponse struct {
-	ID   string
-	Name string
-}
-
-func (a *discordAPI) GetDetailGuild() (*DetailGuildResponse, error) {
+func (a *discordAPI) GetDetailGuild() (*DetailGuild, error) {
 	response, err := a.sendRequest(&Request{
 		Method: "GET",
 		Path:   "/api/v9/guilds/" + a.Args.GuildID,
@@ -162,7 +42,7 @@ func (a *discordAPI) GetDetailGuild() (*DetailGuildResponse, error) {
 		return nil, errors.New("ERR")
 	}
 
-	var out DetailGuildResponse
+	var out DetailGuild
 	err = json.NewDecoder(response.Body).Decode(&out)
 	if err != nil {
 		return nil, err

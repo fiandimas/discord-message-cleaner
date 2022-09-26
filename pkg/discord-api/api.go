@@ -5,10 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 const DISCORD_HOST = "https://discord.com"
@@ -16,12 +14,17 @@ const DISCORD_HOST = "https://discord.com"
 var DiscordApi IDiscordAPI
 
 type IDiscordAPI interface {
+	// Discord Channel API
+	ChannelIsValid() bool
+
+	// Discord Message API
+	GetMessagesID(*GuildQuery) ([]UserMessageID, error)
+	DeleteMessageById(*UserMessageID) error
+	GetTotalMessages() (int, error)
+
 	// Discord Guild API
 	GuildIsValid() bool
-	GetUserGuildMessagesID(*GuildQuery) ([]UserMessagesID, error)
-	DeleteMessageById(*UserMessagesID) error
-	GetTotalUserGuildMessages() (int, error)
-	GetDetailGuild() (*DetailGuildResponse, error)
+	GetDetailGuild() (*DetailGuild, error)
 }
 
 type discordAPI struct {
@@ -34,29 +37,6 @@ func Init(me *APIDiscordMe, args *args.Args) {
 		Args:      args,
 		DiscordMe: me,
 	}
-}
-
-type APIDiscordMe struct {
-	ID                string
-	Username          string
-	Avatar            string
-	AvatarDecoration  string
-	Discriminator     string
-	PublicFlags       int
-	Flags             int
-	PurchasedFlag     int
-	PremiumUsageFlags int
-	Banner            string
-	BannerColor       string
-	AccentColor       string
-	Bio               string
-	Locale            string
-	NFSWAllowed       string
-	MFAEnabled        string
-	PremiumType       int
-	Email             string
-	Verified          bool
-	Phone             string
 }
 
 func GetMe(authorization string) (*APIDiscordMe, error) {
@@ -96,18 +76,6 @@ func GetMe(authorization string) (*APIDiscordMe, error) {
 // asdsaas
 // asdas
 
-type Request struct {
-	Method string
-	Path   string
-	Body   io.Reader
-	Query  []RequestQuery
-}
-
-type RequestQuery struct {
-	Key   string
-	Value string
-}
-
 func (da *discordAPI) sendRequest(p *Request) (*http.Response, error) {
 	request, err := http.NewRequest(p.Method, DISCORD_HOST+p.Path, p.Body)
 	if err != nil {
@@ -128,42 +96,4 @@ func (da *discordAPI) sendRequest(p *Request) (*http.Response, error) {
 	}
 
 	return response, nil
-}
-
-type RequestTimeout struct {
-	Message    string  `json:"message"`
-	RetryAfter float64 `json:"retry_after"`
-	Global     bool    `json:"global"`
-}
-
-type ErrorTimeout struct {
-	retryAfter time.Duration
-}
-
-func (e *ErrorTimeout) Error() string {
-	return ""
-}
-
-func (e *ErrorTimeout) RetryAfter() time.Duration {
-	return e.retryAfter
-}
-
-// asdsa
-// asdsadsa
-// asdsa
-
-type RequestError struct {
-	Code int `json:"code"`
-}
-
-type ErrorRequest struct {
-	code int
-}
-
-func (e *ErrorRequest) Error() string {
-	return ""
-}
-
-func (e *ErrorRequest) Code() int {
-	return e.code
 }

@@ -11,13 +11,13 @@ import (
 func ClearChannelMessages() {
 	discordApi := discordapi.DiscordApi
 
-	fmt.Println("Getting total messages in guilds ...")
+	fmt.Println("Getting total messages in channel ...")
 	time.Sleep(time.Second * 2)
 
-	asd, err := discordApi.GetTotalUserGuildMessages()
+	totalMsg, err := discordApi.GetTotalMessages()
 	if err != nil {
 		if obj, ok := err.(*discordapi.ErrorTimeout); ok {
-			fmt.Println("Timeout ", obj.RetryAfter(), ". try again later")
+			fmt.Println("Timeout", obj.RetryAfter(), ". try again later")
 			os.Exit(1)
 		}
 
@@ -25,7 +25,12 @@ func ClearChannelMessages() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Total messages ", asd, " ...")
+	fmt.Println("Total messages ", totalMsg, " ...")
+	if totalMsg == 0 {
+		fmt.Println("Nothing to delete")
+		return
+	}
+
 	time.Sleep(time.Second * 2)
 
 	fmt.Println("Downloading messages id ...")
@@ -33,13 +38,13 @@ func ClearChannelMessages() {
 	var offset int
 	var errCounter int
 	var wg sync.WaitGroup
-	var messageIds []discordapi.UserMessagesID
+	var messageIds []discordapi.UserMessageID
 
 	for {
 		fmt.Println("Getting request message offset", offset)
 
 		time.Sleep(time.Millisecond * 700)
-		asd, err := discordApi.GetUserGuildMessagesID(&discordapi.GuildQuery{
+		asd, err := discordApi.GetMessagesID(&discordapi.GuildQuery{
 			Offset: offset,
 		})
 

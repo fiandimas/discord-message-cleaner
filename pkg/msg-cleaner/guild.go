@@ -20,7 +20,7 @@ func ClearGuildMessage() {
 	fmt.Printf("Geting your total messages in %s \n", g.Name)
 	time.Sleep(time.Second * 2)
 
-	totalMsg, err := discordApi.GetTotalUserGuildMessages()
+	totalMsg, err := discordApi.GetTotalMessages()
 	if err != nil {
 		if obj, ok := err.(*discordapi.ErrorTimeout); ok {
 			fmt.Printf("Timeout %d. try again later \n", obj.RetryAfter())
@@ -44,13 +44,13 @@ func ClearGuildMessage() {
 	var offset int
 	var errCounter int
 	var wg sync.WaitGroup
-	var messageIds []discordapi.UserMessagesID
+	var messageIds []discordapi.UserMessageID
 
 	for {
 		fmt.Println("Getting request message offset", offset)
 
 		time.Sleep(time.Millisecond * 700)
-		asd, err := discordApi.GetUserGuildMessagesID(&discordapi.GuildQuery{
+		asd, err := discordApi.GetMessagesID(&discordapi.GuildQuery{
 			Offset: offset,
 		})
 
@@ -90,7 +90,7 @@ func ClearGuildMessage() {
 	fmt.Printf("Success delete your messages in %s \n", g.Name)
 }
 
-func deleteMessages(messageIds []discordapi.UserMessagesID, wg *sync.WaitGroup) {
+func deleteMessages(messageIds []discordapi.UserMessageID, wg *sync.WaitGroup) {
 	if len(messageIds) == 0 {
 		fmt.Println("No message can be deleted right now ...")
 		wg.Done()
