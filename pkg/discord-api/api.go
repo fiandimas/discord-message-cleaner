@@ -60,7 +60,7 @@ type APIDiscordMe struct {
 }
 
 func GetMe(authorization string) (*APIDiscordMe, error) {
-	request, err := http.NewRequest("GET", "https://discord.com/api/v9/users/@me", nil)
+	request, err := http.NewRequest("GET", DISCORD_HOST+"/api/v9/users/@me", nil)
 	if err != nil {
 		return nil, err
 	}
