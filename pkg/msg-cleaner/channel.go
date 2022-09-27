@@ -3,7 +3,6 @@ package msgcleaner
 import (
 	discordapi "discord-msg-cleaner/pkg/discord-api"
 	"fmt"
-	"os"
 	"sync"
 	"time"
 )
@@ -17,7 +16,7 @@ func ClearChannelMessages(channelID string) {
 	channel, err := discordApi.GetChannel(channelID)
 	if err != nil {
 		fmt.Println(err.Error())
-		os.Exit(1)
+		return
 	}
 
 	totalMsg, err := discordApi.GetTotalMessages(&discordapi.GuildQuery{
@@ -27,11 +26,11 @@ func ClearChannelMessages(channelID string) {
 	if err != nil {
 		if obj, ok := err.(*discordapi.ErrorTimeout); ok {
 			fmt.Println("Timeout", obj.RetryAfter(), ". try again later")
-			os.Exit(1)
+			return
 		}
 
 		fmt.Println(err.Error())
-		os.Exit(1)
+		return
 	}
 
 	fmt.Printf("Total messages %d ... \n", totalMsg)

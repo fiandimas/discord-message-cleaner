@@ -3,7 +3,6 @@ package msgcleaner
 import (
 	discordapi "discord-msg-cleaner/pkg/discord-api"
 	"fmt"
-	"os"
 	"sync"
 	"time"
 )
@@ -14,7 +13,7 @@ func ClearGuildMessage(guildID string) {
 	g, err := discordApi.GetDetailGuild(guildID)
 	if err != nil {
 		fmt.Println(err.Error())
-		os.Exit(1)
+		return
 	}
 
 	fmt.Printf("Geting your total messages in %s \n", g.Name)
@@ -24,11 +23,11 @@ func ClearGuildMessage(guildID string) {
 	if err != nil {
 		if obj, ok := err.(*discordapi.ErrorTimeout); ok {
 			fmt.Printf("Timeout %d. try again later \n", obj.RetryAfter())
-			os.Exit(1)
+			return
 		}
 
 		fmt.Println(err.Error())
-		os.Exit(1)
+		return
 	}
 
 	fmt.Printf("Total messages %d \n", totalMsg)
@@ -89,4 +88,3 @@ func ClearGuildMessage(guildID string) {
 
 	fmt.Printf("Success delete your messages in %s \n", g.Name)
 }
-
