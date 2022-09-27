@@ -120,5 +120,6 @@ type DetailGuild struct {
 // asdsa
 type DetailChannel struct {
 	ID      string
+	Name    string
 	GuildID string `json:"guild_id"`
 }

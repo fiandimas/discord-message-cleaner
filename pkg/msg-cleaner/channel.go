@@ -33,9 +33,9 @@ func ClearChannelMessages(channelID string) {
 		return
 	}
 
-	fmt.Printf("Total messages %d ... \n", totalMsg)
+	fmt.Printf("Total messages %d \n", totalMsg)
 	if totalMsg == 0 {
-		fmt.Println("Nothing to delete")
+		fmt.Printf("Nothing to delete in %s", channel.Name)
 		return
 	}
 
@@ -90,5 +90,5 @@ func ClearChannelMessages(channelID string) {
 	go deleteMessages(messageIds, &wg)
 	wg.Wait()
 
-	fmt.Println("Success delete messages in guild")
+	fmt.Printf("Success delete messages in channel %s", channel.Name)
 }

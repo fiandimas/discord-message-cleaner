@@ -39,7 +39,6 @@ func main() {
 		}
 
 		msgcleaner.ClearGuildMessage(guildID)
-		os.Exit(1)
 	}
 
 	channelID := a.ChannelID

@@ -20,7 +20,6 @@ func deleteMessages(messageIds []discordapi.MessageID, wg *sync.WaitGroup) {
 		time.Sleep(time.Millisecond * 700)
 
 		if counter == len(messageIds) {
-			fmt.Println("Success delete", counter, "messages")
 			break
 		}
 
@@ -34,7 +33,7 @@ func deleteMessages(messageIds []discordapi.MessageID, wg *sync.WaitGroup) {
 				switch obj.Code() {
 				case 50083:
 					counter += 1
-					fmt.Println("This messages is in archived thread. try open thread and re-run command again later")
+					// fmt.Println("This messages is in archived thread. try open thread and re-run command again later")
 				}
 			}
 			continue

@@ -19,7 +19,9 @@ func ClearGuildMessage(guildID string) {
 	fmt.Printf("Geting your total messages in %s \n", g.Name)
 	time.Sleep(time.Second * 2)
 
-	totalMsg, err := discordApi.GetTotalMessages(&discordapi.GuildQuery{})
+	totalMsg, err := discordApi.GetTotalMessages(&discordapi.GuildQuery{
+		GuildID: guildID,
+	})
 	if err != nil {
 		if obj, ok := err.(*discordapi.ErrorTimeout); ok {
 			fmt.Printf("Timeout %d. try again later \n", obj.RetryAfter())
@@ -50,7 +52,8 @@ func ClearGuildMessage(guildID string) {
 
 		time.Sleep(time.Millisecond * 700)
 		asd, err := discordApi.GetMessagesID(&discordapi.GuildQuery{
-			Offset: offset,
+			Offset:  offset,
+			GuildID: guildID,
 		})
 
 		if err != nil {
@@ -82,9 +85,9 @@ func ClearGuildMessage(guildID string) {
 		}
 	}
 	wg.Add(1)
-	fmt.Printf("Delete %d messages ... \n", len(messageIds))
+	fmt.Printf("Deleting %d messages ... \n", len(messageIds))
 	go deleteMessages(messageIds, &wg)
 	wg.Wait()
 
-	fmt.Printf("Success delete your messages in %s \n", g.Name)
+	fmt.Printf("Success delete your messages in %s server", g.Name)
 }
