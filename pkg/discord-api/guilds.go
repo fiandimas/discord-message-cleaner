@@ -5,10 +5,10 @@ import (
 	"errors"
 )
 
-func (a *discordAPI) GuildIsValid() bool {
+func (a *discordAPI) GuildIsValid(guildID string) bool {
 	response, err := a.sendRequest(&Request{
 		Method: "GET",
-		Path:   "/api/v9/guilds/" + a.Args.GuildID,
+		Path:   "/api/v9/guilds/" + guildID,
 		Body:   nil,
 	})
 	if err != nil {
@@ -23,14 +23,11 @@ func (a *discordAPI) GuildIsValid() bool {
 	return true
 }
 
-// asdsasa
-// asdsa
-// asdsaas
-
-func (a *discordAPI) GetDetailGuild() (*DetailGuild, error) {
+// Get guild information
+func (a *discordAPI) GetDetailGuild(guildID string) (*DetailGuild, error) {
 	response, err := a.sendRequest(&Request{
 		Method: "GET",
-		Path:   "/api/v9/guilds/" + a.Args.GuildID,
+		Path:   "/api/v9/guilds/" + guildID,
 		Body:   nil,
 	})
 	if err != nil {

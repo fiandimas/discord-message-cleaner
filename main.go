@@ -28,17 +28,28 @@ func main() {
 	}
 	fmt.Printf("Username: %s#%s\n", me.Username, me.Discriminator)
 
-	discordapi.Init(me, a)
+	discordapi.Init(a.Autorization, me)
 	discordApi := discordapi.DiscordApi
 
-	if a.GuildID != "" {
-		guildIsValid := discordApi.GuildIsValid()
+	guildID := a.GuildID
+	if guildID != "" {
+		guildIsValid := discordApi.GuildIsValid(guildID)
 		if guildIsValid == false {
 			printErrAndExit(errors.New("Error: guild id is invalid"))
 		}
 
-		msgcleaner.ClearGuildMessage()
+		msgcleaner.ClearGuildMessage(guildID)
 		os.Exit(1)
+	}
+
+	channelID := a.ChannelID
+	if channelID != "" {
+		channelIsValid := discordApi.ChannelIsValid(channelID)
+		if channelIsValid == false {
+			printErrAndExit(errors.New("Error: channel id is invalid"))
+		}
+
+		msgcleaner.ClearChannelMessages(channelID)
 	}
 
 }

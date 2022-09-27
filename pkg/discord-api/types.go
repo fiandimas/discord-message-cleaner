@@ -5,28 +5,12 @@ import (
 	"time"
 )
 
-type APIDiscordUserGuildMessages struct {
-	TotalResults int                                    `json:"total_results"`
-	Messages     [][]APIDiscordUserGuildMessagesContent `json:"messages"`
-}
+type SnowFlake string
 
-type APIDiscordUserGuildMessagesContent struct {
-	ID        string `json:"id"`
-	ChannelID string `json:"channel_id"`
-}
-
-type UserMessageID struct {
-	MessageID string
-	ChannelID string
-}
-
-type GuildQuery struct {
-	AuthorID    string
-	IncludeNSFW string
-	Offset      int
-}
-
-type APIDiscordMe struct {
+// asdadas
+// asdsaa
+// sadsasa
+type Me struct {
 	ID                string
 	Username          string
 	Avatar            string
@@ -49,6 +33,33 @@ type APIDiscordMe struct {
 	Phone             string
 }
 
+type APIDiscordUserGuildMessages struct {
+	TotalResults int                                    `json:"total_results"`
+	Messages     [][]APIDiscordUserGuildMessagesContent `json:"messages"`
+}
+
+type APIDiscordUserGuildMessagesContent struct {
+	ID        string `json:"id"`
+	ChannelID string `json:"channel_id"`
+}
+
+type MessageID struct {
+	MessageID string
+	ChannelID string
+}
+
+type GuildQuery struct {
+	Offset    int
+	ChannelID string
+	GuildID   string
+}
+
+type ChannelQuery struct {
+	Offset    int
+	ChannelID string
+	GuildID   string
+}
+
 type Request struct {
 	Method  string
 	Path    string
@@ -63,7 +74,6 @@ type KeyValue struct {
 }
 
 // Asdddd
-
 type RequestTimeout struct {
 	Message    string  `json:"message"`
 	RetryAfter float64 `json:"retry_after"`
@@ -105,4 +115,10 @@ func (e *ErrorRequest) Code() int {
 type DetailGuild struct {
 	ID   string
 	Name string
+}
+
+// asdsa
+type DetailChannel struct {
+	ID      string
+	GuildID string `json:"guild_id"`
 }

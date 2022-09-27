@@ -12,31 +12,39 @@ import (
 // sada
 // asdsadsadas
 // asdsadas
+func (a *discordAPI) GetMessagesID(q *GuildQuery) ([]MessageID, error) {
+	var asda []MessageID
 
-func (a *discordAPI) GetMessagesID(q *GuildQuery) ([]UserMessageID, error) {
-	var asda []UserMessageID
+	query := []KeyValue{
+		{
+			Key:   "author_id",
+			Value: a.Me.ID,
+		},
+		{
+			Key:   "offset",
+			Value: strconv.Itoa(q.Offset),
+		},
+		{
+			Key:   "include_nsfw",
+			Value: "true",
+		},
+	}
+
+	if q.ChannelID != "" {
+		query = append(query, KeyValue{
+			Key:   "channel_id",
+			Value: q.ChannelID,
+		})
+	}
 
 	response, err := a.sendRequest(&Request{
 		Method: "GET",
-		Path:   "/api/v9/guilds/" + a.Args.GuildID + "/messages/search",
+		Path:   "/api/v9/guilds/" + q.GuildID + "/messages/search",
 		Body:   nil,
-		Query: []KeyValue{
-			{
-				Key:   "author_id",
-				Value: a.DiscordMe.ID,
-			},
-			{
-				Key:   "offset",
-				Value: strconv.Itoa(q.Offset),
-			},
-			{
-				Key:   "include_nsfw",
-				Value: "true",
-			},
-		},
+		Query:  query,
 	})
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
 	}
 	defer response.Body.Close()
 
@@ -56,7 +64,7 @@ func (a *discordAPI) GetMessagesID(q *GuildQuery) ([]UserMessageID, error) {
 
 	for _, message := range out.Messages {
 		for _, m := range message {
-			asda = append(asda, UserMessageID{
+			asda = append(asda, MessageID{
 				MessageID: m.ID,
 				ChannelID: m.ChannelID,
 			})
@@ -66,21 +74,30 @@ func (a *discordAPI) GetMessagesID(q *GuildQuery) ([]UserMessageID, error) {
 	return asda, nil
 }
 
-func (a *discordAPI) GetTotalMessages() (int, error) {
+func (a *discordAPI) GetTotalMessages(q *GuildQuery) (int, error) {
+	query := []KeyValue{
+		{
+			Key:   "author_id",
+			Value: a.Me.ID,
+		},
+		{
+			Key:   "include_nsfw",
+			Value: "true",
+		},
+	}
+
+	if q.ChannelID != "" {
+		query = append(query, KeyValue{
+			Key:   "channel_id",
+			Value: q.ChannelID,
+		})
+	}
+
 	response, err := a.sendRequest(&Request{
 		Method: "GET",
-		Path:   "/api/v9/guilds/" + a.Args.GuildID + "/messages/search",
+		Path:   "/api/v9/guilds/" + q.GuildID + "/messages/search",
 		Body:   nil,
-		Query: []KeyValue{
-			{
-				Key:   "author_id",
-				Value: a.DiscordMe.ID,
-			},
-			{
-				Key:   "include_nsfw",
-				Value: "true",
-			},
-		},
+		Query:  query,
 	})
 	if err != nil {
 		return 0, err
@@ -104,7 +121,7 @@ func (a *discordAPI) GetTotalMessages() (int, error) {
 	return t.TotalResults, nil
 }
 
-func (a *discordAPI) DeleteMessageById(r *UserMessageID) error {
+func (a *discordAPI) DeleteMessageById(r *MessageID) error {
 	response, err := a.sendRequest(&Request{
 		Method: "DELETE",
 		Path:   "/api/v9/channels/" + r.ChannelID + "/messages/" + r.MessageID,

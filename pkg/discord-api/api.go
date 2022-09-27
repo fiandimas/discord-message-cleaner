@@ -1,7 +1,6 @@
 package discordapi
 
 import (
-	"discord-msg-cleaner/pkg/args"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,31 +14,33 @@ var DiscordApi IDiscordAPI
 
 type IDiscordAPI interface {
 	// Discord Channel API
-	ChannelIsValid() bool
+	ChannelIsValid(string) bool
+	GetChannel(string) (*DetailChannel, error)
 
-	// Discord Message API
-	GetMessagesID(*GuildQuery) ([]UserMessageID, error)
-	DeleteMessageById(*UserMessageID) error
-	GetTotalMessages() (int, error)
+	// Function for
+	GetMessagesID(*GuildQuery) ([]MessageID, error)
+	DeleteMessageById(*MessageID) error
+	GetTotalMessages(*GuildQuery) (int, error)
 
 	// Discord Guild API
-	GuildIsValid() bool
-	GetDetailGuild() (*DetailGuild, error)
+	GuildIsValid(string) bool
+	GetDetailGuild(string) (*DetailGuild, error)
 }
 
 type discordAPI struct {
-	*args.Args
-	DiscordMe *APIDiscordMe
+	*Me
+	Authorization string
 }
 
-func Init(me *APIDiscordMe, args *args.Args) {
+func Init(authorization string, me *Me) {
 	DiscordApi = &discordAPI{
-		Args:      args,
-		DiscordMe: me,
+		Authorization: authorization,
+		Me:            me,
 	}
 }
 
-func GetMe(authorization string) (*APIDiscordMe, error) {
+// Get user information by given --authorization flag
+func GetMe(authorization string) (*Me, error) {
 	request, err := http.NewRequest("GET", DISCORD_HOST+"/api/v9/users/@me", nil)
 	if err != nil {
 		return nil, err
@@ -62,7 +63,7 @@ func GetMe(authorization string) (*APIDiscordMe, error) {
 		return nil, errors.New(fmt.Sprintf("Error: failed to authenticate user. got response %s", string(b)))
 	}
 
-	var me APIDiscordMe
+	var me Me
 	err = json.NewDecoder(response.Body).Decode(&me)
 	if err != nil {
 		return nil, err
@@ -71,12 +72,8 @@ func GetMe(authorization string) (*APIDiscordMe, error) {
 	return &me, nil
 }
 
-// asdsa
-// asdsa
-// asdsaas
-// asdas
-
-func (da *discordAPI) sendRequest(p *Request) (*http.Response, error) {
+// Utility for sending http request
+func (a *discordAPI) sendRequest(p *Request) (*http.Response, error) {
 	request, err := http.NewRequest(p.Method, DISCORD_HOST+p.Path, p.Body)
 	if err != nil {
 		return nil, err
@@ -86,9 +83,9 @@ func (da *discordAPI) sendRequest(p *Request) (*http.Response, error) {
 	for _, rq := range p.Query {
 		query.Add(rq.Key, rq.Value)
 	}
-
+	
 	request.URL.RawQuery = query.Encode()
-	request.Header.Set("authorization", da.Args.Autorization)
+	request.Header.Set("authorization", a.Authorization)
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
