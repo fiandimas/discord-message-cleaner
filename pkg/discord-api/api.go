@@ -60,7 +60,7 @@ func GetMe(authorization string) (*Me, error) {
 			return nil, err
 		}
 
-		return nil, errors.New(fmt.Sprintf("Error: failed to authenticate user. got response %s", string(b)))
+		return nil, errors.New(fmt.Sprintf("error: failed to authenticate user. got response %s", string(b)))
 	}
 
 	var me Me

@@ -16,11 +16,7 @@ func (a *discordAPI) GuildIsValid(guildID string) bool {
 	}
 	defer response.Body.Close()
 
-	if response.StatusCode != 200 {
-		return false
-	}
-
-	return true
+	return response.StatusCode == 200
 }
 
 // Get guild information
@@ -36,7 +32,7 @@ func (a *discordAPI) GetDetailGuild(guildID string) (*DetailGuild, error) {
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return nil, errors.New("ERR")
+		return nil, errors.New("failed to get guild")
 	}
 
 	var out DetailGuild

@@ -1,6 +1,9 @@
 package discordapi
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+)
 
 func (a *discordAPI) ChannelIsValid(channelID string) bool {
 	response, err := a.sendRequest(&Request{
@@ -13,11 +16,7 @@ func (a *discordAPI) ChannelIsValid(channelID string) bool {
 	}
 	defer response.Body.Close()
 
-	if response.StatusCode != 200 {
-		return false
-	}
-
-	return true
+	return response.StatusCode == 200
 }
 
 func (a *discordAPI) GetChannel(channelID string) (*DetailChannel, error) {
@@ -32,7 +31,7 @@ func (a *discordAPI) GetChannel(channelID string) (*DetailChannel, error) {
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return nil, err
+		return nil, errors.New("failed to get channel")
 	}
 
 	var out DetailChannel
