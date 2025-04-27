@@ -26,6 +26,7 @@ func deleteMessages(messageIds []discordapi.MessageID, wg *sync.WaitGroup) {
 		err := discordApi.DeleteMessageById(&messageIds[counter])
 		if err != nil {
 			if obj, ok := err.(*discordapi.ErrorTimeout); ok {
+				fmt.Println("Timeout", obj.RetryAfter())
 				time.Sleep(obj.RetryAfter())
 			}
 
@@ -34,7 +35,17 @@ func deleteMessages(messageIds []discordapi.MessageID, wg *sync.WaitGroup) {
 				case 50083:
 					counter += 1
 					// fmt.Println("This messages is in archived thread. try open thread and re-run command again later")
+
+				// error unknown message
+				case 10008:
+					fmt.Println("unknown message")
+					counter += 1
+
+				default:
+					fmt.Println("unknown code", obj.Code())
+					counter += 1
 				}
+
 			}
 			continue
 		}

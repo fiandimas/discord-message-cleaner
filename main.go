@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 )
 
 var a *args.Args
@@ -33,12 +34,17 @@ func main() {
 
 	guildID := a.GuildID
 	if guildID != "" {
-		guildIsValid := discordApi.GuildIsValid(guildID)
-		if guildIsValid == false {
-			printErrAndExit(errors.New("Error: guild id is invalid"))
+		guildIds := strings.Split(guildID, ",")
+		for _, gId := range guildIds {
+			guildIsValid := discordApi.GuildIsValid(gId)
+			if guildIsValid == false {
+				continue
+				printErrAndExit(errors.New("Error: guild id is invalid"))
+			}
+	
+			msgcleaner.ClearGuildMessage(gId)
 		}
-
-		msgcleaner.ClearGuildMessage(guildID)
+		
 	}
 
 	channelID := a.ChannelID

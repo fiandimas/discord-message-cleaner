@@ -59,10 +59,10 @@ func ClearGuildMessage(guildID string) {
 		if err != nil {
 			if obj, ok := err.(*discordapi.ErrorTimeout); ok {
 				fmt.Println("Timeout", obj.RetryAfter(), "")
-				wg.Add(1)
-				go deleteMessages(messageIds, &wg)
+				// wg.Add(1)
+				// go deleteMessages(messageIds, &wg)
 				time.Sleep(obj.RetryAfter())
-				messageIds = nil
+				// messageIds = nil
 				continue
 			}
 
@@ -77,10 +77,10 @@ func ClearGuildMessage(guildID string) {
 
 		}
 
-		offset += 25
+		offset += len(asd)
 		messageIds = append(messageIds, asd...)
 
-		if len(asd) != 25 {
+		if len(asd) == 0 {
 			break
 		}
 	}

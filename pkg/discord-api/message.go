@@ -2,6 +2,7 @@ package discordapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -148,6 +149,8 @@ func (a *discordAPI) DeleteMessageById(r *MessageID) error {
 			}
 		}
 	}
+
+	fmt.Println("Success delete message")
 
 	return nil
 }
