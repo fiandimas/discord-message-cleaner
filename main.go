@@ -57,3 +57,8 @@ func printErrAndExit(err error) {
 	fmt.Println(err.Error())
 	os.Exit(1)
 }
+
+
+func dummy() {
+	// commit from gthub
+}
